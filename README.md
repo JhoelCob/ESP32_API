@@ -5,7 +5,7 @@ graph TD
 
     A --> |Si|G[API]
     G --> |Protocolo HTTP|H[Envio de un formato JSON al servidor]
-    H --> I[Respuesta API]
+    H --> I[Respuesta del servidor]
     I --> |Si|J[Procesamiento de datos]
     I --> |No|K[Alerta fallo]
     B --> C[Seleccion de red]
