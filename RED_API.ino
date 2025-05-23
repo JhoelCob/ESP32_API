@@ -6,11 +6,12 @@
 #define EEPROM_SIZE 128
 #define SSID_ADDR 0
 #define PASS_ADDR 64
-#define API_URL "Dominio API (Faltante)"  
+#define API_URL "http://161.132.206.104:9040/Datos/"
 
 String inputString = "";
 bool stringComplete = false;
 bool wifiConnected = false;
+bool dataSent = false; // Variable para controlar el envío único
 
 void setup() {
   Serial.begin(115200);
@@ -38,22 +39,32 @@ void setup() {
 }
 
 void loop() {
-  if (wifiConnected) {
-    // Crear el JSON con los datos a enviar
-    DynamicJsonDocument doc(128);
-    doc["Nombre"] = "Edwin";
-    doc["Cobeñas"] = "Cobeñas";
-    
+  if (wifiConnected && !dataSent) { 
+    DynamicJsonDocument doc(512); 
+    doc["IMEI"] = "test_wifi";
+    doc["K"] = 1;
+    doc["N"] = 1;
+    doc["P"] = 1;
+    doc["PH"] = 1;
+    doc["humidity"] = 1;
+    doc["id"] = "1";
+    doc["power"] = 1;
+    doc["temperature"] = 1;
+    doc["time"] = "1";
+
     String jsonString;
     serializeJson(doc, jsonString);
     
     // Enviar los datos via HTTP POST
     sendPostRequest(jsonString);
-    // Esperar 5 segundos antes de enviar de nuevo
-    delay(5000);
+    
+    dataSent = true; // Marcar como enviado para evitar repeticiones
+    
+    Serial.println("Conexion  exitosa");
   }
 }
 
+// ====== Las demás funciones permanecen igual ======
 bool waitForWiFiConnection() {
   int attempts = 0;
   while (WiFi.status() != WL_CONNECTED && attempts < 20) {
